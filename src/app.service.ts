@@ -12,7 +12,6 @@ export class AppService {
 
   async saveScore(points: number): Promise<void> {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const newScore = this.scoresRepository.create({ points });
       await this.scoresRepository.save(newScore);
       console.log(`Score saved: ${points}`);
