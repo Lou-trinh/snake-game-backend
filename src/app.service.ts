@@ -1,27 +1,27 @@
 import { Injectable } from '@nestjs/common';
-
-interface Score {
-    id: number;
-    score: number;
-    time: Date;
-}
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Score } from './score.entity';
 
 @Injectable()
 export class AppService {
-    private scores: Score[] = [];
-    private nextId = 1;
+    constructor(
+        @InjectRepository(Score)
+        private scoreRepository: Repository<Score>,
+    ) {}
 
     async saveScore(score: number) {
-        this.scores.push({
-            id: this.nextId++,
+        const newScore = this.scoreRepository.create({
             score,
             time: new Date(),
         });
+        await this.scoreRepository.save(newScore);
     }
 
     async getLeaderboard() {
-        return this.scores
-            .sort((a, b) => b.id - a.id) // Sort by id in descending order (newest first)
-            .slice(0, 10); // Take top 10
+        return this.scoreRepository.find({
+            order: { id: 'DESC' },
+            take: 10,
+        });
     }
 }
