@@ -1,33 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Score } from './score.entity'; // Đảm bảo entity này tồn tại và đúng đường dẫn
+
+interface Score {
+    id: number;
+    score: number;
+    time: Date;
+}
 
 @Injectable()
 export class AppService {
-  constructor(
-    @InjectRepository(Score)
-    private scoresRepository: Repository<Score>,
-  ) {}
+    private scores: Score[] = [];
+    private nextId = 1;
 
-  async saveScore(points: number): Promise<void> {
-    try {
-      const newScore = this.scoresRepository.create({ points });
-      await this.scoresRepository.save(newScore);
-      console.log(`Score saved: ${points}`);
-    } catch (error) {
-      // Xử lý lỗi một cách an toàn
-      console.error(
-        'Failed to save score:',
-        error instanceof Error ? error.message : error,
-      );
+    async saveScore(score: number) {
+        this.scores.push({
+            id: this.nextId++,
+            score,
+            time: new Date(),
+        });
     }
-  }
 
-  async getLeaderboard(): Promise<Score[]> {
-    return this.scoresRepository.find({
-      order: { id: 'DESC' }, // Sắp xếp giảm dần theo ID để lấy điểm mới nhất
-      take: 10, // Giới hạn 10 kết quả
-    });
-  }
+    async getLeaderboard() {
+        return this.scores
+            .sort((a, b) => b.id - a.id) // Sort by id in descending order (newest first)
+            .slice(0, 10); // Take top 10
+    }
 }

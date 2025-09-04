@@ -2,9 +2,12 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class Score {
-  @PrimaryGeneratedColumn()
-  id!: number;
+    @PrimaryGeneratedColumn()
+    id!: number;
 
-  @Column()
-  points!: number;
+    @Column()
+    score!: number;
+
+    @Column()
+    time!: Date;
 }
