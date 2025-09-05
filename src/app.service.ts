@@ -10,11 +10,10 @@ export class AppService {
         private scoreRepository: Repository<Score>,
     ) {}
 
-    async saveScore(score: number) {
-        const newScore = this.scoreRepository.create({
-            score,
-            time: new Date(),
-        });
+    async saveScore(score: number, name: string){
+        const newScore = new Score();
+        newScore.score = score;
+        newScore.name = name;
         await this.scoreRepository.save(newScore);
     }
 

@@ -9,5 +9,8 @@ export class Score {
     score!: number;
 
     @Column()
+    name: string;
+
+    @Column({ default: Date.now() })
     time!: Date;
 }

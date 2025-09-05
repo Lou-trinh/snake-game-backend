@@ -6,8 +6,8 @@ export class AppController {
     constructor(private readonly appService: AppService) {}
 
     @Post('submit-score')
-    async submitScore(@Body() body: { score: number }) {
-        await this.appService.saveScore(body.score);
+    async submitScore(@Body() body: { score: number, name: string }) {
+        await this.appService.saveScore(body.score, body.name);
         return { message: 'Điểm số đã được lưu thành công!' };
     }
 
